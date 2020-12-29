@@ -1,0 +1,8 @@
+name: seed-gen
+services:
+- environment_slug: node-js
+  github:
+    branch: main
+    deploy_on_push: true
+    repo: lucidkodo/seed-gen
+  name: seed-gen
