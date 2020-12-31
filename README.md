@@ -1,24 +1,8 @@
 # seed-gen
 
-## Project setup
-```
-yarn install
-```
-
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
-
-### Compiles and minifies for production
-```
-yarn build
-```
-
-### Lints and fixes files
-```
-yarn lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+Project Refs:
+- https://www.verywellfamily.com/top-1000-baby-boy-names-2757618
+- https://www.verywellfamily.com/top-1000-baby-girl-names-2757832
+- https://namecensus.com/most_common_surnames.htm
+- https://www.randomlists.com/email-addresses
+- https://datahub.io/core/world-cities
