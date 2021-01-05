@@ -48,7 +48,7 @@ export default {
       string: ranGen('0') + ', ' + ranGen('0'),
       result: '',
       num: 0,
-      dataPool: [],
+      target: [],
       city: geo[14442].name,
 
       randomInRange () {
