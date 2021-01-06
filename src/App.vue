@@ -2,6 +2,7 @@
 #component
   //- h1 Seed gen
   .header(v-for="(header, index) in headers", :i="index", :header="header")
+    button.remove-header(@click="removeHeader(index)") Remove header
     p.title Header:
     input(type="text", placeholder="Header name", v-model="header.name")
     br
@@ -61,7 +62,7 @@
           .container
             label Fixed Characters
             input(type="text", :id="'fixChar' + index", placeholder="chars")
-            button(@click="header.parts.collection.push({handler: 'range', value: getValue('char', index)})") +
+            button(@click="header.parts.collection.push({handler: 'plain', value: getValue('char', index)})") +
     hr
 
   button(@click="addHeader") Add New Header
@@ -124,6 +125,10 @@ export default {
         }
       ],
       csvResults: 'line1\nline2',
+
+      removeHeader (i) {
+        this.headers.splice(i, 1)
+      },
 
       addHeader () {
         this.headers.push({
