@@ -6,30 +6,38 @@
     p.title Header:
     input(type="text", placeholder="Header name", v-model="header.name")
     br
+
     p.title Pool:
     input(type="radio", :id="'pool' + index", :value="true", v-model="header.pool")
     label(:for="'pool' + index") existing
-
     input(type="radio", :id="'custom' + index", :value="false", v-model="header.pool")
     label(:for="'custom' + index") custom
 
     .pool(v-if="header.pool")
-      input(type="radio", :id="'female' + index", value="female", v-model="header.pool")
+      input(type="radio", :id="'female' + index", value="female", v-model="header.poolName")
       label(:for="'female' + index") Female firstnames
-      input(type="radio", :id="'male' + index", value="male", v-model="header.pool")
+      br
+
+      input(type="radio", :id="'male' + index", value="male", v-model="header.poolName")
       label(:for="'male' + index") Male firstnames
-      input(type="radio", :id="'lastname' + index", value="lastname", v-model="header.pool")
+      br
+
+      input(type="radio", :id="'lastname' + index", value="lastname", v-model="header.poolName")
       label(:for="'lastname' + index") Lastnames
-      input(type="radio", :id="'geo' + index", value="geo", v-model="header.pool")
+      br
+
+      input(type="radio", :id="'geo' + index", value="geo", v-model="header.poolName")
       label(:for="'geo' + index") City names
 
     .custom-pool(v-if="header.pool === false")
       p.title Components:
       br
+
       .part-list(v-if="header.parts.collection")
         div(v-for="(opts, optIndex) in header.parts.collection")
           p.selected-parts {{ opts.name }}
           button(@click="header.parts.collection.splice(optIndex, 1)") -
+
       .components
         input(type="radio", :id="'static' + index", :value="true", v-model="header.parts.isStatic")
         p Static
@@ -69,6 +77,11 @@
 
 #results
   //- h1 Results
+  label.title Number of rows:
+  br
+  input(type="number", v-model="rows")
+  br
+
   textarea(v-model="csvResults")
   br
   button(@click="downloadCsv") Download CSV
@@ -124,6 +137,7 @@ export default {
           finalValue: ''
         }
       ],
+      rows: 1000,
       csvResults: 'line1\nline2',
 
       removeHeader (i) {
