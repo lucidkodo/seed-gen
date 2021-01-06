@@ -6,24 +6,65 @@
     input(type="text", placeholder="Header name", v-model="header.name")
     br
     p.title Pool:
-    input(type="radio", :id="'existing' + index", :value="true", v-model="header.existing")
-    label(:for="'existing' + index") existing
+    input(type="radio", :id="'pool' + index", :value="true", v-model="header.pool")
+    label(:for="'pool' + index") existing
 
-    input(type="radio", :id="'notExisting' + index", :value="false", v-model="header.existing")
-    label(:for="'notExisting' + index") custom
+    input(type="radio", :id="'custom' + index", :value="false", v-model="header.pool")
+    label(:for="'custom' + index") custom
 
-    .pool(v-if="header.existing")
+    .pool(v-if="header.pool")
       input(type="radio", :id="'female' + index", value="female", v-model="header.pool")
-      label(:for="'female' + index") Female first names
+      label(:for="'female' + index") Female firstnames
       input(type="radio", :id="'male' + index", value="male", v-model="header.pool")
-      label(:for="'male' + index") Male first names
+      label(:for="'male' + index") Male firstnames
       input(type="radio", :id="'lastname' + index", value="lastname", v-model="header.pool")
       label(:for="'lastname' + index") Lastnames
       input(type="radio", :id="'geo' + index", value="geo", v-model="header.pool")
       label(:for="'geo' + index") City names
+
+    .custom-pool(v-if="header.pool === false")
+      p.title Components:
+      br
+      .part-list(v-if="header.parts.collection")
+        div(v-for="(opts, optIndex) in header.parts.collection")
+          p.selected-parts {{ opts.name }}
+          button(@click="header.parts.collection.splice(optIndex, 1)") -
+      .components
+        input(type="radio", :id="'static' + index", :value="true", v-model="header.parts.isStatic")
+        p Static
+        br
+        textarea(v-model="header.parts.value")
+
+      .components
+        input(type="radio", :id="'dynamic' + index", :value="false", v-model="header.parts.isStatic")
+        p Dynamic
+        br
+        .parts
+          .container
+            label Digit
+            button(@click="header.parts.collection.push({name: 'digit', handler: 'random', value: '0'})") +
+          .container
+            label Alphabet Lowercase
+            button(@click="header.parts.collection.push({name: 'alphabet', handler: 'random', value: 'a'})") +
+          .container
+            label Alphabet Uppercase
+            button(@click="header.parts.collection.push({name: 'ALPHABET', handler: 'random', value: 'A'})") +
+          .container
+            label Symbols
+            button(@click="header.parts.collection.push({name: 'symbols', handler: 'random', value: '!'})") +
+          .container
+            label Range
+            br
+            input(type="number", :id="'min' + index", placeholder="start")
+            input(type="number", :id="'max' + index", placeholder="end")
+            button(@click="header.parts.collection.push({handler: 'range', value: getValue('range', index)})") +
+          .container
+            label Fixed Characters
+            input(type="text", :id="'fixChar' + index", placeholder="chars")
+            button(@click="header.parts.collection.push({handler: 'range', value: getValue('char', index)})") +
     hr
 
-  button(@click="addHeader") Add Header
+  button(@click="addHeader") Add New Header
 
 #results
   //- h1 Results
@@ -67,8 +108,19 @@ export default {
       headers: [
         {
           name: 'Cities',
-          existing: true,
-          pool: 'female'
+          pool: false,
+          poolName: 'female',
+          parts: {
+            isStatic: false,
+            collection: [
+              {
+                name: 'digit',
+                handler: 'random',
+                value: '0'
+              }
+            ]
+          },
+          finalValue: ''
         }
       ],
       csvResults: 'line1\nline2',
@@ -79,6 +131,17 @@ export default {
           existing: true,
           pool: ''
         })
+      },
+
+      getValue (type, i) {
+        let value = ''
+
+        if (type === 'range') {
+          value = [parseInt(window['min' + i].value), parseInt(window['max' + i].value)]
+        } else if (type === 'char') {
+          value = window['fixChar' + i].value.trim()
+        }
+        return value
       },
 
       randomInRange () {
@@ -93,7 +156,7 @@ export default {
           const max = Math.max(...arguments)
           const range = []
 
-          for (var i = min; i < max + 1; i++) {
+          for (let i = min; i < max + 1; i++) {
             range.push(i)
           }
           const rangeIndex = getRand(range.length)
@@ -109,19 +172,20 @@ export default {
         this.headers.map(h => {
           console.log(h)
         })
-        console.log(this.handler(this.regular, 'regular string'))
       },
 
-      random (param) {
-        return ranGen(param)
-      },
+      processHeader (headerObj) {
+        for (let i = 0; i < headerObj.parts.collection.length; i++) {
+          const opt = headerObj.parts.collection[i]
 
-      regular (param) {
-        return param
-      },
-
-      handler (type, value) {
-        return type(value)
+          if (opt.handler === 'random') {
+            ranGen(opt.value)
+          } else if (opt.handler === 'range') {
+            this.randomInRange(opt.value)
+          } else if (opt.handler === '') {
+            // code here
+          }
+        }
       }
     }
   }
