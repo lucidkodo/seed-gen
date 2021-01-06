@@ -1,23 +1,43 @@
 <template lang="pug">
-//- img(alt="Vue logo", src="./assets/logo.png")
-//- HelloWorld(msg="Seed generator")
-h1 Seed generator
-div
-  p today: {{ today }}
-  p 2 random numbers: {{ string }}
-  button(@click="increment") +
-  p my num: {{ num }}
-  p city: {{ city }}
+#component
+  //- h1 Seed gen
+  .header(v-for="(header, index) in headers", :i="index", :header="header")
+    p.title Header:
+    input(type="text", placeholder="Header name", v-model="header.name")
+    br
+    p.title Pool:
+    input(type="radio", :id="'existing' + index", :value="true", v-model="header.existing")
+    label(:for="'existing' + index") existing
+
+    input(type="radio", :id="'notExisting' + index", :value="false", v-model="header.existing")
+    label(:for="'notExisting' + index") custom
+
+    .pool(v-if="header.existing")
+      input(type="radio", :id="'female' + index", value="female", v-model="header.pool")
+      label(:for="'female' + index") Female first names
+      input(type="radio", :id="'male' + index", value="male", v-model="header.pool")
+      label(:for="'male' + index") Male first names
+      input(type="radio", :id="'lastname' + index", value="lastname", v-model="header.pool")
+      label(:for="'lastname' + index") Lastnames
+      input(type="radio", :id="'geo' + index", value="geo", v-model="header.pool")
+      label(:for="'geo' + index") City names
+    hr
+
+  button(@click="addHeader") Add Header
+
+#results
+  //- h1 Results
+  textarea(v-model="csvResults")
+  br
+  button(@click="downloadCsv") Download CSV
 </template>
 
 <script>
-// import HelloWorld from './components/HelloWorld.vue'
-import dayjs from 'dayjs'
 import ranGen from 'randomatic'
-import geo from '../data/geo/cities.json'
-import female from '../data/names/female.json'
-import male from '../data/names/male.json'
-import lastname from '../data/names/lastname.json'
+// import geo from '../data/geo/cities.json'
+// import female from '../data/names/female.json'
+// import male from '../data/names/male.json'
+// import lastname from '../data/names/lastname.json'
 
 export default {
   name: 'App',
@@ -31,25 +51,35 @@ export default {
 
   async mounted () {
     console.log('mounted')
-    console.log(
-      female[this.randomInRange(female.length)].name +
-      ' and ' +
-      male[this.randomInRange(male.length)].name +
-      ' ' +
-      lastname[this.randomInRange(lastname.length)].name +
-      ' from ' +
-      geo[this.randomInRange(geo.length)].name
-    )
+    // console.log(
+    //   female[this.randomInRange(female.length)].name +
+    //   ' and ' +
+    //   male[this.randomInRange(male.length)].name +
+    //   ' ' +
+    //   lastname[this.randomInRange(lastname.length)].name +
+    //   ' from ' +
+    //   geo[this.randomInRange(geo.length)].name
+    // )
   },
 
   data () {
     return {
-      today: dayjs().format('YYYY-MM-DD'),
-      string: ranGen('0') + ', ' + ranGen('0'),
-      result: '',
-      num: 0,
-      target: [],
-      city: geo[14442].name,
+      headers: [
+        {
+          name: 'Cities',
+          existing: true,
+          pool: 'female'
+        }
+      ],
+      csvResults: 'line1\nline2',
+
+      addHeader () {
+        this.headers.push({
+          name: '',
+          existing: true,
+          pool: ''
+        })
+      },
 
       randomInRange () {
         function getRand (num) {
@@ -75,13 +105,23 @@ export default {
         return result
       },
 
-      doSomething (e) {
-        console.log(e)
-        this.result = e
+      downloadCsv () {
+        this.headers.map(h => {
+          console.log(h)
+        })
+        console.log(this.handler(this.regular, 'regular string'))
       },
 
-      increment () {
-        this.num++
+      random (param) {
+        return ranGen(param)
+      },
+
+      regular (param) {
+        return param
+      },
+
+      handler (type, value) {
+        return type(value)
       }
     }
   }
