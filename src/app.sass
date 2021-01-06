@@ -1,7 +1,33 @@
+*, *::before, *::after
+  box-sizing: border-box
+  margin: 0
+  padding: 0
+
 #app
   font-family: Avenir, Helvetica, Arial, sans-serif
   -webkit-font-smoothing: antialiased
   -moz-osx-font-smoothing: grayscale
-  text-align: center
   color: #2c3e50
-  margin-top: 60px
+  padding: 30px
+
+#component, #results
+  display: inline-block
+  vertical-align: top
+  width: 450px
+
+#component
+  padding: 0 15px 0 0
+
+  p
+    margin: 0
+    display: inline-block
+
+    &.title
+      margin-bottom: 15px
+      font-weight: bold
+
+  .header
+    margin-top: 30px
+
+#results
+  padding: 0 0 0 15px
