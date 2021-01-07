@@ -9,6 +9,7 @@
   -moz-osx-font-smoothing: grayscale
   color: #2c3e50
   padding: 30px
+  font-size: 14px
 
 #component, #results
   display: inline-block
@@ -23,7 +24,6 @@
     right: 0
     top: 0
 
-
   p
     margin: 0
     display: inline-block
@@ -35,7 +35,7 @@
   .header
     margin-top: 30px
     position: relative
-    border: 1px dashed #333
+    border: 1px dashed #b7b7b7
 
     .pool
       padding: 10px 10px 10px 20px
@@ -45,23 +45,42 @@
   vertical-align: top
   margin: 10px
 
-.selected-parts
-  background-color: #9e9e9e
-  padding
+.part-list
+  div
+    display: inline
+    margin-right: 3px
+
+    .selected-parts
+      background-color: #9e9e9e
+      padding: 0 5px
+
+    button
+      padding: 0 5px
 
 .parts
   .container
     border: 1px solid grey
-    width: 200px
+    width: 300px
+    position: relative
 
     input[type=number]
-      width: 80px
-
+      width: 60px
 
     button
+      position: absolute
+      top: 0
+      bottom: 0
+      right: 0
       background-color: #a9e8a8
       border: 0
       padding: 0 10px
+
+  i.tips
+    display: block
+    font-size: 12px
+    font-family: monospace
+    color: #a0a0a0
+    margin: 2px 0 5px 0
 
 #results
   padding: 0 0 0 15px
