@@ -87,7 +87,7 @@
           i.tips One random value will be selected.
 
           .container(v-if="index !== 0")
-            label Values from previous header
+            label Reuse previous header
             br
 
   button(@click="addHeader") Add New Header
@@ -176,11 +176,16 @@ export default {
 
         if (type === 'range') {
           value = [parseInt(window['min' + i].value || 0), parseInt(window['max' + i].value || 0)]
+          window['min' + i].value = ''
+          window['max' + i].value = ''
         } else if (type === 'char') {
           value = window['char' + i].value.trim() || ''
+          window['char' + i].value = ''
         } else if (type === 'custom') {
           value = window['textarea' + i].value.split('\n')
+          window['textarea' + i].value = ''
         }
+
         return value
       },
 
