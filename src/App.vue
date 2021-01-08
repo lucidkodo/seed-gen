@@ -2,9 +2,9 @@
 #component
   //- h1 Seed gen
   .header(v-for="(header, index) in headers", :i="index", :header="header")
-    button.remove-header(@click="headers.splice(index, 1)") Remove header
+    button.remove-header(@click="headers.splice(index, 1)") &times;
     p.title Header:
-    input(type="text", placeholder="Header name", v-model="header.name")
+    input(type="text", placeholder="Header name", v-model="header.name", autofocus)
     br
 
     p.title Pool:
@@ -93,7 +93,7 @@
   button(@click="addHeader") Add New Header
   br
   br
-  button(@click="processInput") Process
+  button(@click="processHeader") Generate
   br
   br
   button(@click="this.headers.length = 0") Clear Headers
@@ -107,11 +107,14 @@
 
   textarea(v-model="csvResults")
   br
-  button(@click="processHeader") Download CSV
+  button(@click="downloadCsv") Download CSV
 </template>
 
 <script>
 import ranGen from 'randomatic'
+import json2csv from 'json2csv'
+import dayjs from 'dayjs'
+
 import geo from '../data/geo/cities.json'
 import female from '../data/names/female.json'
 import male from '../data/names/male.json'
@@ -129,15 +132,6 @@ export default {
 
   async mounted () {
     console.log('mounted')
-    // console.log(
-    //   female[this.randomInRange(female.length)].name +
-    //   ' and ' +
-    //   male[this.randomInRange(male.length)].name +
-    //   ' ' +
-    //   lastname[this.randomInRange(lastname.length)].name +
-    //   ' from ' +
-    //   geo[this.randomInRange(geo.length)].name
-    // )
   },
 
   data () {
@@ -157,8 +151,8 @@ export default {
           finalValue: ''
         }
       ],
-      rows: 1000,
-      csvResults: 'line1\nline2',
+      rows: 10,
+      csvResults: '',
       resultArr: [],
 
       addHeader () {
@@ -215,17 +209,20 @@ export default {
       },
 
       downloadCsv () {
-        this.headers.map(h => {
-          console.log(h)
-        })
+        const element = document.createElement('a')
+        element.style.display = 'none'
+
+        element.setAttribute('href', 'data:text/plaincharset=utf-8,' + encodeURIComponent(this.csvResults))
+        element.setAttribute('download', 'seed-gen-' + dayjs().format('HHmmss') + '.csv')
+
+        document.body.appendChild(element)
+        element.click()
+        document.body.removeChild(element)
       },
 
       processInput () {
-        // const obj = {}
-
         for (let i = 0; i < this.headers.length; i++) {
           const header = this.headers[i]
-          // obj[header.name] = ''
 
           if (header.pool) {
             switch (header.poolName) {
@@ -249,13 +246,10 @@ export default {
               const part = header.parts[i]
 
               if (part.handler === 'random') {
-                // obj[header.name] += ranGen(part.value)
                 finalValue += ranGen(part.value)
               } else if (part.handler === 'range') {
-                // obj[header.name] += this.randomInRange(part.value[0], part.value[1])
                 finalValue += this.randomInRange(part.value[0], part.value[1])
               } else if (part.handler === 'char') {
-                // obj[header.name] += part.value
                 finalValue += part.value
               } else if (part.handler === 'custom') {
                 finalValue += this.randomInRange(part.value)
@@ -264,22 +258,29 @@ export default {
               header.finalValue = finalValue
             }
           }
-          console.log(header)
         }
-        // console.log(obj)
       },
 
       processHeader () {
-        const result = []
-        const obj = {}
+        this.resultArr.length = 0
+        for (let j = 0; j < this.rows; j++) {
+          const obj = {}
+          this.processInput()
 
-        for (let i = 0; i < this.headers.length; i++) {
-          const header = this.headers[i]
-          obj[header.name] = header.finalValue
+          for (let i = 0; i < this.headers.length; i++) {
+            const header = this.headers[i]
+            obj[header.name] = header.finalValue
+          }
+
+          this.resultArr.push(obj)
         }
 
-        result.push(obj)
-        console.log(result)
+        const fields = Object.keys(this.resultArr[0])
+        this.csvResults = ''
+
+        json2csv.parseAsync(this.resultArr, { fields })
+          .then(res => (this.csvResults = res))
+          .catch(err => console.log(err))
       }
     }
   }
