@@ -37,7 +37,7 @@
         div(v-for="(opts, optIndex) in header.parts")
           p.selected-parts(v-if="opts.name === 'range' || opts.name === 'char'") {{ opts.name }}: {{ opts.value }}
           p.selected-parts(v-if="opts.name === 'custom'") {{ opts.name }}: {{ opts.value.length }}
-          p.selected-parts(v-else) {{ opts.name }}
+          p.selected-parts(v-if="opts.name === 'digit' || opts.name === 'alpha' || opts.name === 'ALPHA' || opts.name === 'symb'") {{ opts.name }}
           button(@click="header.parts.splice(optIndex, 1)") -
 
       .components
@@ -93,7 +93,7 @@
   button(@click="addHeader") Add New Header
   br
   br
-  button(@click="processData") Process
+  button(@click="processInput") Process
   br
   br
   button(@click="this.headers.length = 0") Clear Headers
@@ -107,7 +107,7 @@
 
   textarea(v-model="csvResults")
   br
-  button(@click="downloadCsv") Download CSV
+  button(@click="processHeader") Download CSV
 </template>
 
 <script>
@@ -215,26 +215,26 @@ export default {
         })
       },
 
-      processData () {
-        const obj = {}
+      processInput () {
+        // const obj = {}
 
         for (let i = 0; i < this.headers.length; i++) {
           const header = this.headers[i]
-          obj[header.name] = ''
+          // obj[header.name] = ''
 
           if (header.pool) {
             switch (header.poolName) {
               case 'geo':
-                obj[header.name] = geo[this.randomInRange(geo.length)].name
+                header.finalValue = this.randomInRange(geo).name
                 break
               case 'female':
-                obj[header.name] = female[this.randomInRange(female.length)].name
+                header.finalValue = this.randomInRange(female).name
                 break
               case 'male':
-                obj[header.name] = male[this.randomInRange(male.length)].name
+                header.finalValue = this.randomInRange(male).name
                 break
               case 'lastname':
-                obj[header.name] = lastname[this.randomInRange(lastname.length)].name
+                header.finalValue = this.randomInRange(lastname).name
                 break
             }
           } else {
@@ -264,18 +264,17 @@ export default {
         // console.log(obj)
       },
 
-      processHeader (headerObj) {
-        for (let i = 0; i < headerObj.parts.length; i++) {
-          const opt = headerObj.parts[i]
+      processHeader () {
+        const result = []
+        const obj = {}
 
-          if (opt.handler === 'random') {
-            ranGen(opt.value)
-          } else if (opt.handler === 'range') {
-            this.randomInRange(opt.value)
-          } else if (opt.handler === '') {
-            // code here
-          }
+        for (let i = 0; i < this.headers.length; i++) {
+          const header = this.headers[i]
+          obj[header.name] = header.finalValue
         }
+
+        result.push(obj)
+        console.log(result)
       }
     }
   }
