@@ -36,6 +36,7 @@
       .part-list(v-if="header.parts")
         div(v-for="(opts, optIndex) in header.parts")
           p.selected-parts(v-if="opts.name === 'range' || opts.name === 'char'") {{ opts.name }}: {{ opts.value }}
+          p.selected-parts(v-if="opts.name === 'custom'") {{ opts.name }}: {{ opts.value.length }}
           p.selected-parts(v-else) {{ opts.name }}
           button(@click="header.parts.splice(optIndex, 1)") -
 
@@ -75,13 +76,27 @@
             label Characters
             br
             input(type="text", :id="'char' + index", placeholder="chars")
-            button(@click="header.parts.push({name: 'char', handler: 'plain', value: getValue('char', index)})") +
-          i.tips Will be inserted as per
+            button(@click="header.parts.push({name: 'char', handler: 'char', value: getValue('char', index)})") +
+          i.tips Will be inserted as per.
+
+          .container
+            label Custom pool
+            br
+            button(@click="header.parts.push({name: 'custom', handler: 'custom', value: getValue('custom', index)})") +
+            textarea(:id="'textarea' + index", placeholder="values separated by new lines.")
+          i.tips One random value will be selected.
+
+          .container(v-if="index !== 0")
+            label Values from previous header
+            br
 
   button(@click="addHeader") Add New Header
   br
   br
   button(@click="processData") Process
+  br
+  br
+  button(@click="this.headers.length = 0") Clear Headers
 
 #results
   //- h1 Results
@@ -114,7 +129,6 @@ export default {
 
   async mounted () {
     console.log('mounted')
-    console.log(this.randomInRange(3, 5))
     // console.log(
     //   female[this.randomInRange(female.length)].name +
     //   ' and ' +
@@ -132,7 +146,7 @@ export default {
         {
           name: 'Cities',
           pool: false,
-          poolName: 'female',
+          poolName: '',
           parts: [
             {
               name: 'digit',
@@ -164,12 +178,10 @@ export default {
           value = [parseInt(window['min' + i].value || 0), parseInt(window['max' + i].value || 0)]
         } else if (type === 'char') {
           value = window['char' + i].value.trim() || ''
+        } else if (type === 'custom') {
+          value = window['textarea' + i].value.split('\n')
         }
         return value
-      },
-
-      getName () {
-
       },
 
       randomInRange () {
@@ -190,7 +202,8 @@ export default {
           const rangeIndex = getRand(range.length)
           result = range[rangeIndex]
         } else if (arguments.length === 1) {
-          result = getRand(arguments[0])
+          const arr = arguments[0]
+          result = arr[getRand(arr.length)]
         }
 
         return result
@@ -225,20 +238,30 @@ export default {
                 break
             }
           } else {
+            let finalValue = ''
+
             for (let i = 0; i < header.parts.length; i++) {
               const part = header.parts[i]
 
               if (part.handler === 'random') {
-                obj[header.name] += ranGen(part.value)
+                // obj[header.name] += ranGen(part.value)
+                finalValue += ranGen(part.value)
               } else if (part.handler === 'range') {
-                obj[header.name] += this.randomInRange(part.value[0], part.value[1])
-              } else if (part.handler === 'plain') {
-                obj[header.name] += part.value
+                // obj[header.name] += this.randomInRange(part.value[0], part.value[1])
+                finalValue += this.randomInRange(part.value[0], part.value[1])
+              } else if (part.handler === 'char') {
+                // obj[header.name] += part.value
+                finalValue += part.value
+              } else if (part.handler === 'custom') {
+                finalValue += this.randomInRange(part.value)
               }
+
+              header.finalValue = finalValue
             }
           }
+          console.log(header)
         }
-        console.log(obj)
+        // console.log(obj)
       },
 
       processHeader (headerObj) {
