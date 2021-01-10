@@ -27,39 +27,47 @@ input, textarea
   display: inline-block
   vertical-align: top
   width: 350px
+  height: 600px
+  border: 1px solid #000
+  position: relative
 
 #builder
-  border: 1px solid #000
+  // padding-bottom: 150px
+  // overflow-y: scroll
 
-  button.remove-header
-    position: absolute
-    right: 5px
-    top: 5px
-    padding: 0px 5px
+  .frame
+    height: 375px
+    overflow-y: scroll
 
-  p
-    margin: 0
-    display: inline-block
+    button.remove-header
+      position: absolute
+      right: 5px
+      top: 5px
+      padding: 0px 5px
 
-    &.title
-      margin: 8px 10px 0 0
-      font-weight: bold
+    p
+      margin: 0
+      display: inline-block
 
-  .header-box
-    position: relative
-    margin-bottom: 5px
-    // border: 1px dashed #b7b7b7
+      &.title
+        margin: 8px 10px 0 0
+        font-weight: bold
 
-    .header-info
-      background-color: #eeb7ff
-      padding: 10px
-      cursor: pointer
+    .header-box
+      position: relative
+      margin-bottom: 5px
+      // border: 1px dashed #b7b7b7
 
-      input[type=text]
-        border: 0
-        border-radius: 3px
-        padding: 3px 5px
-        width: 150px
+      .header-info
+        background-color: #eeb7ff
+        padding: 10px
+        cursor: pointer
+
+        input[type=text]
+          border: 0
+          border-radius: 3px
+          padding: 3px 5px
+          width: 150px
 
 .components
   display: block
@@ -147,7 +155,13 @@ input, textarea
   background-color: #b5ffb5
 
 .btns
+  position: absolute
+  bottom: 0
   padding: 10px
+  background-color: lightblue
+
+  p
+    display: inline-block
 
   button.add-header
     text-align: center
@@ -173,8 +187,7 @@ input, textarea
     padding: 10px
 
 #results
-  padding: 0 0 0 15px
-  position: relative
+  padding: 0 15px
 
   textarea
     width: 100%

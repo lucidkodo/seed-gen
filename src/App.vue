@@ -1,104 +1,105 @@
 <template lang="pug">
 #builder
-  //- h1 Seed gen
-  .header-box(v-for="(header, index) in headers", :id="index")
-    button.remove-header(@click="headers.splice(index, 1)") &times;
+  h1 Seed gen
+  .frame
+    .header-box(v-for="(header, index) in headers", :id="'header' + index")
+      button.remove-header(@click="headers.splice(index, 1)") &times;
 
-    .header-info(@click="showHeader(index)")
-      p.title Header Name:
-      input(type="text", placeholder="Header name", v-model="header.name")
-      p.title Data Structure:
-      span {{ header.parts.length }} part(s) selected
+      .header-info(@click="showHeader(index)")
+        p.title Header Name:
+        input(type="text", placeholder="Header name", v-model="header.name")
+        p.title Data Structure:
+        span {{ header.parts.length }} part(s) selected
 
-    .components(:id="'edit' + index")
-      .part-list(v-if="header.parts.length")
-        div(v-for="(opts, optIndex) in header.parts")
-          p.selected-parts(v-if="opts.handler === 'default'") {{ opts.value }}
-          p.selected-parts(v-if="opts.name === 'range' || opts.name === 'char'") {{ opts.name }}: {{ opts.value }}
-          p.selected-parts(v-if="opts.name === 'custom'") pool of {{ opts.value.length }}
-          p.selected-parts(v-if="opts.name === 'digit' || opts.name === 'alpha' || opts.name === 'ALPHA' || opts.name === 'symb'") {{ opts.name }}
-          button.remove-part(@click="header.parts.splice(optIndex, 1)") -
-      .part-list(v-else)
-        i Select items from the following to build
+      .components(:id="'edit' + index")
+        .part-list(v-if="header.parts.length")
+          div(v-for="(opts, optIndex) in header.parts")
+            p.selected-parts(v-if="opts.handler === 'default'") {{ opts.value }}
+            p.selected-parts(v-if="opts.name === 'range' || opts.name === 'char'") {{ opts.name }}: {{ opts.value }}
+            p.selected-parts(v-if="opts.name === 'custom'") pool of {{ opts.value.length }}
+            p.selected-parts(v-if="opts.name === 'digit' || opts.name === 'alpha' || opts.name === 'ALPHA' || opts.name === 'symb'") {{ opts.name }}
+            button.remove-part(@click="header.parts.splice(optIndex, 1)") -
+        .part-list(v-else)
+          i Select items from the following to build
 
-      //- .tips
-        //- i(:class="{showTip: hovered()}")
-        i {{ tip }}
+        //- .tips
+          //- i(:class="{showTip: hovered()}")
+          i {{ tip }}
 
-      .parts
-        b.component-title Pre-generated pools
-        .component-group
-          .component-type(@mouseover="displayTip('female')", @click="displayTip('female')")
-            label female names
-            button(@click="header.parts.push({name: 'female', handler: 'default', value: 'firstname (f)'})") +
-          //- i.tips female names
+        .parts
+          b.component-title Pre-generated pools
+          .component-group
+            .component-type(@mouseover="displayTip('female')", @click="displayTip('female')")
+              label female names
+              button(@click="header.parts.push({name: 'female', handler: 'default', value: 'firstname (f)'})") +
+            //- i.tips female names
 
-          .component-type(@mouseover="displayTip('male')", @click="displayTip('male')")
-            label male names
-            button(@click="header.parts.push({name: 'male', handler: 'default', value: 'firstname (m)'})") +
-          //- i.tips male names
+            .component-type(@mouseover="displayTip('male')", @click="displayTip('male')")
+              label male names
+              button(@click="header.parts.push({name: 'male', handler: 'default', value: 'firstname (m)'})") +
+            //- i.tips male names
 
-          .component-type
-            label lastnames
-            button(@click="header.parts.push({name: 'lastname', handler: 'default', value: 'lastnames'})") +
-          //- i.tips lastnames
+            .component-type
+              label lastnames
+              button(@click="header.parts.push({name: 'lastname', handler: 'default', value: 'lastnames'})") +
+            //- i.tips lastnames
 
-          .component-type
-            label city names
-            button(@click="header.parts.push({name: 'geo', handler: 'default', value: 'city names'})") +
-          //- i.tips city names
+            .component-type
+              label city names
+              button(@click="header.parts.push({name: 'geo', handler: 'default', value: 'city names'})") +
+            //- i.tips city names
 
-        b.component-title Random Single Character
-        .component-group
-          .component-type
-            label Digit
-            button(@click="header.parts.push({name: 'digit', handler: 'random', value: '0'})") +
-          //- i.tips 0123456789
+          b.component-title Random Single Character
+          .component-group
+            .component-type
+              label Digit
+              button(@click="header.parts.push({name: 'digit', handler: 'random', value: '0'})") +
+            //- i.tips 0123456789
 
-          .component-type
-            label Alphabet Lowercase
-            button(@click="header.parts.push({name: 'alpha', handler: 'random', value: 'a'})") +
-          //- i.tips abcdefghijklmnopqrstuvwxyz
+            .component-type
+              label Alphabet Lowercase
+              button(@click="header.parts.push({name: 'alpha', handler: 'random', value: 'a'})") +
+            //- i.tips abcdefghijklmnopqrstuvwxyz
 
-          .component-type
-            label Alphabet Uppercase
-            button(@click="header.parts.push({name: 'ALPHA', handler: 'random', value: 'A'})") +
-          //- i.tips ABCDEFGHIJKLMNOPQRSTUVWXYZ
+            .component-type
+              label Alphabet Uppercase
+              button(@click="header.parts.push({name: 'ALPHA', handler: 'random', value: 'A'})") +
+            //- i.tips ABCDEFGHIJKLMNOPQRSTUVWXYZ
 
-          .component-type
-            label Symbols
-            button(@click="header.parts.push({name: 'symb', handler: 'random', value: '!'})") +
-          //- i.tips ~!@#$%^&()_+-={}[];\',.
+            .component-type
+              label Symbols
+              button(@click="header.parts.push({name: 'symb', handler: 'random', value: '!'})") +
+            //- i.tips ~!@#$%^&()_+-={}[];\',.
 
-        b.component-title Custom
-        .component-group
-          .component-type
-            label Num Range
-            button(@click="header.parts.push({name: 'range', handler: 'range', value: getValue('range', index)})") +
-            br
-            input(type="number", :id="'min' + index", placeholder="start")
-            input(type="number", :id="'max' + index", placeholder="end")
-          //- i.tips number range
+          b.component-title Custom
+          .component-group
+            .component-type
+              label Num Range
+              button(@click="header.parts.push({name: 'range', handler: 'range', value: getValue('range', index)})") +
+              br
+              input(type="number", :id="'min' + index", placeholder="start")
+              input(type="number", :id="'max' + index", placeholder="end")
+            //- i.tips number range
 
-          .component-type
-            label Fixed Characters
-            button(@click="header.parts.push({name: 'char', handler: 'char', value: getValue('char', index)})") +
-            br
-            input(type="text", :id="'char' + index", placeholder="inserted as is")
-          //- i.tips Will be inserted as per.
+            .component-type
+              label Fixed Characters
+              button(@click="header.parts.push({name: 'char', handler: 'char', value: getValue('char', index)})") +
+              br
+              input(type="text", :id="'char' + index", placeholder="inserted as is")
+            //- i.tips Will be inserted as per.
 
-          .component-type
-            label Custom pool
-            button(@click="header.parts.push({name: 'custom', handler: 'custom', value: getValue('custom', index)})") +
-            br
-            textarea(:id="'textarea' + index", placeholder="values separated by new lines.")
-          //- i.tips One random value will be selected.
+            .component-type
+              label Custom pool
+              button(@click="header.parts.push({name: 'custom', handler: 'custom', value: getValue('custom', index)})") +
+              br
+              textarea(:id="'textarea' + index", placeholder="values separated by new lines.")
+            //- i.tips One random value will be selected.
 
-          //- .component-type(v-if="index !== 0")
-          //-   label Reuse previous header
-          //-   br
+            //- .component-type(v-if="index !== 0")
+            //-   label Reuse previous header
+            //-   br
 
-      //- button.close-edit(@click="closeEdit") Close
+        //- button.close-edit(@click="closeEdit") Close
   .btns
     button.add-header(@click="addHeader") + New Header
     button.generate(@click="processHeader") 🛠️ Generate Data
@@ -139,7 +140,7 @@ export default {
       tip: 'Click / hover for more',
       headers: [
         {
-          name: 'Cities',
+          name: 'cities',
           parts: [
             {
               name: 'digit',
@@ -245,6 +246,7 @@ export default {
 
           for (let j = 0; j < header.parts.length; j++) {
             const part = header.parts[j]
+            console.log(part)
 
             if (part.handler === 'default') {
               switch (part.name) {
