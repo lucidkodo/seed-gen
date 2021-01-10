@@ -1,30 +1,29 @@
 <template lang="pug">
 #builder
   //- h1 Seed gen
-  .header-box(v-for="(header, index) in headers", :i="index")
+  .header-box(v-for="(header, index) in headers", :id="index")
     button.remove-header(@click="headers.splice(index, 1)") &times;
 
-    .header-info
+    .header-info(@click="showHeader(index)")
       p.title Header Name:
       input(type="text", placeholder="Header name", v-model="header.name")
-      br
-
       p.title Data Structure:
       span {{ header.parts.length }} part(s) selected
 
-    .components
+    .components(:id="'edit' + index")
       .part-list(v-if="header.parts.length")
         div(v-for="(opts, optIndex) in header.parts")
           p.selected-parts(v-if="opts.handler === 'default'") {{ opts.value }}
           p.selected-parts(v-if="opts.name === 'range' || opts.name === 'char'") {{ opts.name }}: {{ opts.value }}
-          p.selected-parts(v-if="opts.name === 'custom'") {{ opts.name }}: {{ opts.value.length }}
+          p.selected-parts(v-if="opts.name === 'custom'") pool of {{ opts.value.length }}
           p.selected-parts(v-if="opts.name === 'digit' || opts.name === 'alpha' || opts.name === 'ALPHA' || opts.name === 'symb'") {{ opts.name }}
           button.remove-part(@click="header.parts.splice(optIndex, 1)") -
       .part-list(v-else)
-        i Select one from the following to build
+        i Select items from the following to build
 
-      .tips
-        i {{ 'Tip: ' + tip || 'Click / hover for more' }}
+      //- .tips
+        //- i(:class="{showTip: hovered()}")
+        i {{ tip }}
 
       .parts
         b.component-title Pre-generated pools
@@ -85,7 +84,7 @@
             label Fixed Characters
             button(@click="header.parts.push({name: 'char', handler: 'char', value: getValue('char', index)})") +
             br
-            input(type="text", :id="'char' + index", placeholder="chars")
+            input(type="text", :id="'char' + index", placeholder="inserted as is")
           //- i.tips Will be inserted as per.
 
           .component-type
@@ -95,28 +94,23 @@
             textarea(:id="'textarea' + index", placeholder="values separated by new lines.")
           //- i.tips One random value will be selected.
 
-          .component-type(v-if="index !== 0")
-            label Reuse previous header
-            br
+          //- .component-type(v-if="index !== 0")
+          //-   label Reuse previous header
+          //-   br
 
-  button(@click="addHeader") Add New Header
-  br
-  br
-  button(@click="processHeader") Generate
-  br
-  br
-  button(@click="this.headers.length = 0") Clear Headers
+      //- button.close-edit(@click="closeEdit") Close
+  .btns
+    button.add-header(@click="addHeader") + New Header
+    button.generate(@click="processHeader") 🛠️ Generate Data
+    p Row Count:
+    input.rows(type="number", v-model="rows", placeholder="Rows to generate")
+    button.clear-all(@click="this.headers.length = 0") 🗑️ Clear Headers
 
 #results
-  //- h1 Results
-  label.title Number of rows:
-  br
-  input(type="number", v-model="rows")
-  br
-
+  h1 Results
   textarea(v-model="csvResults")
   br
-  button(@click="downloadCsv") Download CSV
+  button.download(@click="downloadCsv") 💾 Download CSV
 </template>
 
 <script>
@@ -142,7 +136,7 @@ export default {
 
   data () {
     return {
-      tip: '',
+      tip: 'Click / hover for more',
       headers: [
         {
           name: 'Cities',
@@ -166,6 +160,15 @@ export default {
           parts: [],
           finalValue: ''
         })
+      },
+
+      showHeader (i) {
+        const el = document.getElementById('edit' + i)
+        if (el.classList.contains('hide')) {
+          el.classList.remove('hide')
+        } else {
+          el.classList.add('hide')
+        }
       },
 
       getValue (type, i) {
