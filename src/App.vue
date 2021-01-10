@@ -1,8 +1,8 @@
 <template lang="pug">
 #builder
-  h1 Seed generator
+  h1 Builder
   .frame
-    p.no-header(v-if="headers.length === 0") Click on "+ New Header" to begin!
+    p.no-header(v-if="headers.length === 0") Click "+ New Header" to begin!
     .header-box(v-for="(header, index) in headers", :id="'header' + index")
       button.remove-header(@click="headers.splice(index, 1)") &times;
 
