@@ -1,7 +1,8 @@
 <template lang="pug">
 #builder
-  h1 Seed gen
+  h1 Seed generator
   .frame
+    p.no-header(v-if="headers.length === 0") Click on "+ New Header" to begin!
     .header-box(v-for="(header, index) in headers", :id="'header' + index")
       button.remove-header(@click="headers.splice(index, 1)") &times;
 
@@ -11,14 +12,14 @@
         p.title Data Structure:
         span {{ header.parts.length }} part(s) selected
 
-      .components(:id="'edit' + index")
+      .components.hide(:id="'edit' + index")
         .part-list(v-if="header.parts.length")
           div(v-for="(opts, optIndex) in header.parts")
             p.selected-parts(v-if="opts.handler === 'default'") {{ opts.value }}
             p.selected-parts(v-if="opts.name === 'range' || opts.name === 'char'") {{ opts.name }}: {{ opts.value }}
             p.selected-parts(v-if="opts.name === 'custom'") pool of {{ opts.value.length }}
             p.selected-parts(v-if="opts.name === 'digit' || opts.name === 'alpha' || opts.name === 'ALPHA' || opts.name === 'symb'") {{ opts.name }}
-            button.remove-part(@click="header.parts.splice(optIndex, 1)") -
+            button.remove-part(@click="header.parts.splice(optIndex, 1)") &times;
         .part-list(v-else)
           i Select items from the following to build
 
@@ -29,12 +30,12 @@
         .parts
           b.component-title Pre-generated pools
           .component-group
-            .component-type(@mouseover="displayTip('female')", @click="displayTip('female')")
+            .component-type
               label female names
               button(@click="header.parts.push({name: 'female', handler: 'default', value: 'firstname (f)'})") +
             //- i.tips female names
 
-            .component-type(@mouseover="displayTip('male')", @click="displayTip('male')")
+            .component-type
               label male names
               button(@click="header.parts.push({name: 'male', handler: 'default', value: 'firstname (m)'})") +
             //- i.tips male names
