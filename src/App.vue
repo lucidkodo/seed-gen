@@ -129,11 +129,11 @@ export default {
   name: 'App',
 
   async created () {
-    console.log('created')
+    // console.log('created')
   },
 
   async mounted () {
-    console.log('mounted')
+    // console.log('mounted')
   },
 
   data () {
@@ -141,8 +141,95 @@ export default {
       tip: 'Click / hover for more',
       headers: [
         {
-          name: 'cities',
+          name: 'name',
           parts: [
+            {
+              name: 'female',
+              handler: 'default',
+              value: 'firstname (f)'
+            }
+          ],
+          finalValue: ''
+        },
+        {
+          name: 'order item',
+          parts: [
+            {
+              name: 'custom',
+              handler: 'custom',
+              value: [
+                'blue pants',
+                'tank top',
+                'white shirt',
+                'sweater',
+                'jeans',
+                'leggings',
+                'socks'
+              ]
+            }
+          ],
+          finalValue: ''
+        },
+        {
+          name: 'price',
+          parts: [
+            {
+              name: 'digit',
+              handler: 'random',
+              value: '0'
+            },
+            {
+              name: 'digit',
+              handler: 'random',
+              value: '0'
+            },
+            {
+              name: 'char',
+              handler: 'char',
+              value: '.'
+            },
+            {
+              name: 'digit',
+              handler: 'random',
+              value: '0'
+            },
+            {
+              name: 'digit',
+              handler: 'random',
+              value: '0'
+            }
+          ],
+          finalValue: ''
+        },
+        {
+          name: 'quantity',
+          parts: [
+            {
+              name: 'range',
+              handler: 'range',
+              value: [1, 3]
+            }
+          ],
+          finalValue: ''
+        },
+        {
+          name: 'order id',
+          parts: [
+            {
+              name: 'char',
+              handler: 'char',
+              value: '000'
+            },
+            {
+              name: 'digit',
+              handler: 'random',
+              value: '0'
+            },
+            {
+              name: 'digit',
+              handler: 'random',
+              value: '0'
+            },
             {
               name: 'digit',
               handler: 'random',
@@ -152,7 +239,7 @@ export default {
           finalValue: ''
         }
       ],
-      rows: 10,
+      rows: 50,
       csvResults: '',
       resultArr: [],
 
@@ -247,7 +334,6 @@ export default {
 
           for (let j = 0; j < header.parts.length; j++) {
             const part = header.parts[j]
-            console.log(part)
 
             if (part.handler === 'default') {
               switch (part.name) {
